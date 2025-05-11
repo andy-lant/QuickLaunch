@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="QuickLaunch.UI.Controls.CommandEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:QuickLaunch.UI.Controls"
+             xmlns:config="clr-namespace:QuickLaunch.Core.Config"
+             xmlns:vm="clr-namespace:QuickLaunch.UI.ViewModel"
+             xmlns:converters="clr-namespace:QuickLaunch.UI.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="150" d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <converters:DispatcherDefinitionConverter x:Key="DispatcherConverter"/>
+    </UserControl.Resources>
+        
+    
+    <Grid IsEnabled="{Binding Model.IsActualCommandSelected, RelativeSource={RelativeSource AncestorType=local:CommandEditorControl}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="_Name:" 
+               Target="{Binding ElementName=NameTextBox}" VerticalAlignment="Center"/>
+        <TextBox x:Name="NameTextBox" Grid.Row="0" Grid.Column="1" Margin="5" VerticalAlignment="Center"
+                 Text="{Binding Model.SelectedCommand.Name,
+                                RelativeSource={RelativeSource AncestorType=local:CommandEditorControl},
+                                TargetNullValue='(No command selected)'}"
+                 ToolTip="Unique identifier for this command."/>
+
+        <Label Grid.Row="1" 
+               Grid.Column="0" 
+               Content="_Sequence:"
+               Target="{Binding ElementName=SequenceTextBox}"
+               VerticalAlignment="Center"/>
+        <TextBox x:Name="SequenceTextBox"
+                 Text="{Binding Model.SelectedCommand.Sequence, RelativeSource={RelativeSource AncestorType=local:CommandEditorControl}}"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Margin="5"
+                 VerticalAlignment="Center"
+                 ToolTip="Enter key sequence (e.g., 'q', 'Ctrl+K S', 'Win+N'). Case-insensitive for modifiers/keys."/>
+
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Content="_Dispatcher:"
+               Target="{Binding ElementName=DispatcherComboBox}"
+               VerticalAlignment="Center"/>
+        <ComboBox x:Name="DispatcherComboBox"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  ItemsSource="{Binding DispatcherModel.DisplayItems, 
+                                        RelativeSource={RelativeSource AncestorType=local:CommandEditorControl}}"
+                  DisplayMemberPath="Name"
+                  SelectedItem="{Binding Model.SelectedCommand.Dispatcher,
+                                         RelativeSource={RelativeSource AncestorType=local:CommandEditorControl},
+                                         Mode=TwoWay,
+                                         UpdateSourceTrigger=PropertyChanged,
+                                         Converter={StaticResource DispatcherConverter}}"
+                  SelectionChanged="DispatcherComboBox_SelectionChanged"
+                  MinWidth="100"
+                  Margin="5"
+                  VerticalAlignment="Center"
+                  ToolTip="Select the dispatcher instance this sequence should trigger."/>
+    </Grid>
+</UserControl>

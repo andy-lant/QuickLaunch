@@ -1,0 +1,51 @@
+# Sample QuickLaunch Configuration File
+
+[[dispatcher]]
+name = "QuickOpen"
+[[dispatcher]]
+name = "QuickUrl"
+[[dispatcher]]
+name = "Reload Settings"
+[[dispatcher]]
+name = "Edit Settings"
+
+[[action]]
+dispatcher = "QuickOpen"
+type = "OpenFile"
+index = 1
+[action.params]
+Path = ["README.md"]
+[[action]]
+dispatcher = "QuickUrl"
+type = "OpenUrl"
+index = 1
+[action.params]
+Url = ["https://www.google.com"]
+[[action]]
+dispatcher = "Reload Settings"
+type = "ReloadConfiguration"
+index = 1
+[action.params]
+[[action]]
+dispatcher = "Edit Settings"
+type = "Settings"
+index = 1
+[action.params]
+
+[[command]]
+sequence = "Q"
+name = "QuickOpen"
+dispatcher = "QuickOpen"
+[[command]]
+sequence = "U"
+name = "QuickUrl"
+dispatcher = "QuickUrl"
+[[command]]
+sequence = "<F5>"
+name = "New Command"
+dispatcher = "Reload Settings"
+[[command]]
+sequence = "<Ctrl+F5>"
+name = "Edit Settings"
+dispatcher = "Edit Settings"
+

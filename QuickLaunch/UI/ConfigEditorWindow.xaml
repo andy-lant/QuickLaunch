@@ -1,0 +1,126 @@
+﻿<Window x:Class="QuickLaunch.UI.ConfigEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QuickLaunch.UI"
+        xmlns:controls="clr-namespace:QuickLaunch.UI.Controls"
+        xmlns:converters="clr-namespace:QuickLaunch.UI.Converters"
+        xmlns:vm="clr-namespace:QuickLaunch.UI.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:ConfigurationViewModel}"
+        Title="QuickLaunch Configuration Editor" Height="600" Width="900"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Content="Commands:" FontWeight="Bold"/>
+
+            <controls:AddRemoveListView Grid.Row="1"
+                x:Name="CommandListView"
+                ItemsSource="{Binding CommandListViewModel.Commands}"
+                SelectedItem="{Binding CommandListViewModel.SelectedCommand, Mode=TwoWay}"
+                AddCommand="{Binding CommandListViewModel.AddCommandCommand}"
+                RemoveCommand="{Binding CommandListViewModel.RemoveCommandCommand}"
+                MinWidth="250"
+                Margin="0,5,0,5">
+
+                <controls:AddRemoveListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Name}" Width="124"/>
+                        <GridViewColumn Header="Dispatcher"
+                                        DisplayMemberBinding="{Binding Dispatcher.Name}"
+                                        Width="124" />
+                    </GridView>
+                </controls:AddRemoveListView.View>
+
+                <controls:AddRemoveListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </controls:AddRemoveListView.ItemContainerStyle>
+                
+            </controls:AddRemoveListView>
+
+            <GroupBox Grid.Row="2" Margin="5,0,0,0">
+                <GroupBox.Header>
+                    <TextBlock Text="Selected Command Settings" FontWeight="Bold"/>
+                </GroupBox.Header>
+                <Border Padding="10">
+                    <controls:CommandEditorControl
+                            x:Name="SelectedCommandEditor"
+                            Model="{Binding CommandListViewModel, Mode=OneWay}"
+                            DispatcherModel="{Binding DispatcherListViewModel, Mode=OneWay}"
+                        />
+                </Border>
+
+            </GroupBox>
+        </Grid>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="LightGray"/>
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Margin="5,0,0,0">
+            <controls:DispatcherEditorControl
+                    x:Name="SelectedDispatcherEditor"
+                    IsEnabled="{Binding DispatcherListViewModel.IsActualDispatcherSelected}" Loaded="SelectedDispatcherEditor_Loaded" />
+
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                Margin="0,10,0,5"
+                BorderBrush="Red" BorderThickness="1" CornerRadius="3"
+                Background="#15FF0000"
+                >
+            <Border.Visibility>
+                <Binding Path="IsConfigValid" Mode="OneWay">
+                    <Binding.Converter>
+                        <converters:InverseBoolToVisibilityConverter />
+                    </Binding.Converter>
+                </Binding>
+            </Border.Visibility>
+            <StackPanel>
+                <TextBlock Text="Configuration Errors:" FontWeight="Bold" Foreground="Red" Margin="5,5,5,2"/>
+                <ItemsControl ItemsSource="{Binding ConfigValidationErrors}" Margin="15,0,5,5">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="Red" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button x:Name="SaveButton" Content="Save All &amp; Close" Margin="5" Padding="10,5" IsDefault="True" MinWidth="120" Click="SaveButton_Click"/>
+            <Button x:Name="CancelButton" Content="Cancel" Margin="5" Padding="10,5"  IsCancel="True" MinWidth="75" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

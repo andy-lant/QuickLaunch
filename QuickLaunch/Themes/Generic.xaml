@@ -1,0 +1,102 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:QuickLaunch.UI.Controls">
+
+    
+    <Brush x:Key="WindowBackground">#ff1f1f1f</Brush>
+    <Brush x:Key="WindowBorder">#ff3d3d3d</Brush>
+    <Thickness x:Key="WindowBorderThickness">1</Thickness>
+
+    <Brush x:Key="MainTextColor">AntiqueWhite</Brush>
+    <Brush x:Key="MainInputColor">#ff2f2f2f</Brush>
+
+    <Brush x:Key="ControlBorder">#ff7160e8</Brush>
+    
+    <Viewbox x:Key="DefaultAddButtonContent" x:Shared="False">
+        <Path Data="M 1,5 H 9 M 5,1 V 9" 
+              Stroke="Green"
+              StrokeThickness="2"
+              Stretch="Uniform"/>
+    </Viewbox>
+
+    <Viewbox x:Key="DefaultRemoveButtonContent" x:Shared="False">
+        <Path Stroke="Red"
+              StrokeThickness="2"
+              Stretch="Uniform"
+              Data="M0,5 H10" />
+    </Viewbox>
+
+    <Style TargetType="{x:Type local:AddRemoveListView}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:AddRemoveListView}">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer Focusable="false" Grid.Row="0"
+                                      VerticalAlignment="Stretch"
+                                      >
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+
+                        <StackPanel Grid.Row="1"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,5,0,0">
+                            <Button x:Name="AddButton"
+                                VerticalAlignment="Center"
+                                Margin="0,0,5,0"
+                                MinHeight="20"
+                                MinWidth="25"
+                                Padding="5,3"
+                                Command="{Binding Path=AddCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                Focusable="False"
+                                Content="{Binding Path=AddButtonContent, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={StaticResource DefaultAddButtonContent}}"
+                                >
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="10"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+
+
+                            <Button x:Name="RemoveButton"
+                                    VerticalAlignment="Center"
+                                    Margin="5"
+                                    MinHeight="20"
+                                    MinWidth="25"
+                                    Padding="5,3"
+                                    Command="{Binding Path=RemoveCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                    CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Focusable="False"
+                                    Content="{Binding Path=RemoveButtonContent, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={StaticResource DefaultRemoveButtonContent}}"
+                                >
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="10"/>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SelectedItem, RelativeSource={RelativeSource TemplatedParent}}" Value="{x:Null}">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
