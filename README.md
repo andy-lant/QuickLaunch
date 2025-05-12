@@ -33,5 +33,3 @@ As a summary, this is the sequence of events involved in executing an action:
 
 	User enters key sequence → Command is triggered → Invoke dispatcher with action index → Execute action
 
-The definition of dispatchers on the right side of the configuration panel is currently rather quirky.
-
