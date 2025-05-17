@@ -228,9 +228,7 @@ public class QuotedStringTypeConverter : TypeConverter
     #region ----- Properties. -----
 
     // Backing field.
-    private readonly ImmutableDictionary<char, Escape> _escapedChars = new[] {
-        new Escape('"'), new Escape ('\\')
-    }.ToImmutableDictionary(v => v.Character);
+    private readonly ImmutableDictionary<char, Escape> _escapedChars;
 
     /// <summary>
     /// List of characters that should/must be escaped.
@@ -238,9 +236,7 @@ public class QuotedStringTypeConverter : TypeConverter
     public IImmutableDictionary<char, Escape> EscapedChars => _escapedChars;
 
     // Backing field.
-    private readonly ImmutableDictionary<char, Escape> _unescapedChars = new[] {
-        new Escape('"'), new Escape ('\\')
-    }.ToImmutableDictionary(v => v.EscapeValue);
+    private readonly ImmutableDictionary<char, Escape> _unescapedChars;
 
     /// <summary>
     /// List of characters part of an escape sequence.
@@ -250,18 +246,18 @@ public class QuotedStringTypeConverter : TypeConverter
     #endregion
 
     #region ----- Constructors. -----
-    public QuotedStringTypeConverter()
+    public QuotedStringTypeConverter() : this(Array.Empty<Escape>())
     {
         // Default escaped chars.
     }
 
     public QuotedStringTypeConverter(IEnumerable<Escape> escapedChars)
     {
-        foreach (var escape in escapedChars)
-        {
-            this._escapedChars.Add(escape.Character, escape);
-            this._unescapedChars.Add(escape.EscapeValue, escape);
-        }
+        // Default escaped chars + user given.
+        List<Escape> escapes = new(new[] { new Escape('"'), new Escape('\\') });
+        escapes.AddRange(escapedChars);
+        _escapedChars = escapes.ToImmutableDictionary((c) => c.Character);
+        _unescapedChars = escapes.ToImmutableDictionary((c) => c.EscapeValue);
     }
 
     #endregion
